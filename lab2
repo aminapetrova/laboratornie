@@ -1,0 +1,53 @@
+.LC0:                                         
+	.ascii "enter a number: \0"                 //вводим цифру
+.LC1:
+	.ascii "%d\0"
+.LC2:
+	.ascii "its square root is = %dk\0"        //выводим его корень
+	.text
+	.globl	main
+	.def	main;	.scl	2;	.type	32;	.endef
+	.seh_proc	main
+main:
+	pushq	%rbp                                //начало функции
+	.seh_pushreg	%rbp                        
+	movq	%rsp, %rbp                          //командаь копирует из одного в другое (rsp--rbp)
+	.seh_setframe	%rbp, 0
+	subq	$48, %rsp                           //разность
+	.seh_stackalloc	48
+	.seh_endprologue
+	call	__main
+	leaq	.LC0(%rip), %rax
+	movq	%rax, %rcx
+	call	printf
+	movl	$1, -4(%rbp)                        // переменная k со значением 1
+	movl	$0, -8(%rbp)                        // переменная x со значением 0
+	movl	$0, -12(%rbp)                       // переменная sum со значением 0
+	leaq	-16(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC1(%rip), %rax
+	movq	%rax, %rcx
+	call	scanf                               //вызов scanf  
+	jmp	.L2                                   //начало цикла
+.L3:
+	movl	-4(%rbp), %eax                      //sum+n
+	addl	%eax, -12(%rbp)
+	addl	$2, -4(%rbp)                        //n+=2
+	addl	$1, -8(%rbp)                        //x++
+.L2:
+	movl	-16(%rbp), %eax                     //условия цикла
+	cmpl	%eax, -12(%rbp)                     //сравнение в условии
+	jl	.L3
+	movl	-8(%rbp), %eax                      //вывод printlf
+	movl	%eax, %edx
+	leaq	.LC2(%rip), %rax
+	movq	%rax, %rcx
+	call	printf
+	movl	$0, %eax
+	addq	$48, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.ident	"GCC: (Rev10, Built by MSYS2 project) 12.2.0"
+	.def	printf;	.scl	2;	.type	32;	.endef
+	.def	scanf;	.scl	2;	.type	32;	.endef
