@@ -1,0 +1,14 @@
+variable calc
+0 calc !
+: sqrroot ( n -- m) 
+    1 
+    swap   
+    begin
+      over - swap 2 + swap      
+      1 calc +!
+    dup 0 = over 2 over drop < or until
+    drop calc @
+;
+
+16 sqrroot 
+.
