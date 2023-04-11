@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <omp.h>
+
+#define ARRAY_SIZE 1000000
+
+int main() {
+    // Заполнение массивов A и B случайными числами
+    int A[ARRAY_SIZE], B[ARRAY_SIZE], i;
+    for (i = 0; i < ARRAY_SIZE; i++) {
+        A[i] = rand() % 100;
+        B[i] = rand() % 100;
+    }
+
+    // Вычисление суммы элементов массива A
+    int sumA = 0, sumB = 0;
+    #pragma omp parallel for reduction(+:sumA,sumB)
+    for (i = 0; i < ARRAY_SIZE; i++) {
+        sumA += A[i];
+        sumB += B[i];
+    }
+
+    printf("Сумма элементов массива A: %d\n", sumA);
+    printf("Сумма элементов массива B: %d\n", sumB);
+
+    return 0;
+}
